@@ -85,7 +85,7 @@ public class UrlEncoder {
 		dontNeedEncoding.set('*');
 	}
 	
-	static public String urlEncode(String s, CharSet charset) throws UnsupportedEncodingException {
+	public static String urlEncode(String s, CharSet charset) throws UnsupportedEncodingException {
 		if (s == null)
 			return null;
 		boolean needToChange = false;
@@ -150,6 +150,11 @@ public class UrlEncoder {
 	}
 	
 	public static void main(String[] args) {
-		
+		String keyword = "";
+		try {
+			String res = urlEncode(keyword,CharSet.UTF8);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }
