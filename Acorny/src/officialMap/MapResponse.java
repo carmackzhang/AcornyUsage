@@ -69,8 +69,16 @@ class Data{
 	String curpage;
 	String pagecount;
 	String curresult;
+	String exact;
 	List<Feature> feature;
 	String resultcount;
+	
+	public String getExact() {
+		return exact;
+	}
+	public void setExact(String exact) {
+		this.exact = exact;
+	}
 	public String getCurpage() {
 		return curpage;
 	}
@@ -273,6 +281,13 @@ class Detail{
 	String province;
 	String poidesc;
 	String city;
+	String tag;
+	public String getTag() {
+		return tag;
+	}
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 	public String getPhone() {
 		return phone;
 	}
