@@ -16,7 +16,7 @@ public class WekaRegression {
 	private Instances trainData;
 	private Instances testData;
 //	private AttributeSelectedClassifier classifier;
-	private Classifier classifier;
+	private static Classifier classifier;
 	private static String iteration;
 	private static String attrRatio;
 	private static String attrNum;
@@ -49,17 +49,17 @@ public class WekaRegression {
 			new WekaRegression(new File(args[0]), new File(args[1]));
 			long time = System.currentTimeMillis()-begin;
 			System.out.println("iteration:"+iteration+"\tdepth:"+depth+"\tattrNum:"+attrNum+"\t"+time/1000+" s");
-		}else if(args.length==5){
-			model = args[4];
-			attrNum = args[3];
-			depth = args[2];
-			iteration = args[1];
+		}else if(args.length==2){
+			model = args[1];
+//			attrNum = args[3];
+//			depth = args[2];
+//			iteration = args[1];
 			long begin = System.currentTimeMillis();
 			new WekaRegression(new File(args[0]));
 			long time = System.currentTimeMillis()-begin;
-			System.out.println("iteration:"+iteration+"\tdepth:"+depth+"\tattrNum:"+attrNum+"\t"+time/1000+" s");
+			System.out.println("modelInfo:"+classifier+"time:"+time/1000+" s");
 		}else{
-			System.err.println("Usage:(train test iteration depth attrNum model) or (test iteration depth attrNum model)");
+			System.err.println("Usage:(train test iteration depth attrNum model) or (test model)");
 		}
 	}
 
@@ -80,19 +80,25 @@ public class WekaRegression {
 		double mean = 0;
 		double r2 = 0;
 		double relativeSquareMean = 0;
-		int displayNum = 300;
+		int displayNum = 100;
 		
 		try {
-			for (int i = 0; i < totalNum; i++) {
+			for (int i = 0,j=0; i < totalNum; i++) {
 				Instance ins = testData.get(i);
 				double prediction = classifier.classifyInstance(ins);
 				double real = ins.classValue();
 				if(Math.abs(prediction-real)<=2){
 					rightNum++;
 				}
-				if(i<displayNum){
-//					System.out.println("predictLabel:"+prediction+"\trealLabel:"+real);
-				}
+//				else{
+//					if(j<displayNum){
+//						System.out.println("predictLabel:"+prediction+"\trealLabel:"+real);
+////						System.out.println(ins);
+//						j++;
+//					}
+//				}
+				System.out.println("predictLabel:"+Math.round(prediction)+"\trealLabel:"+real);
+				
 				u += (prediction-real)*(prediction-real);
 				mean += real;
 			}
@@ -119,6 +125,8 @@ public class WekaRegression {
 			loader.setFile(test);
 			testData = loader.getDataSet();
 			testData.setClassIndex(testData.numAttributes() - 1);
+//			System.out.println("testData:"+testData.get(0));
+//			System.out.println(testData.numAttributes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

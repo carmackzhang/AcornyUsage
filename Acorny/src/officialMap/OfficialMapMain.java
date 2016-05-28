@@ -17,10 +17,16 @@ import officialMap.UrlEncoder.CharSet;
 public class OfficialMapMain {
 
 	public static void main(String[] args) {
-		String subtitleOld = "C:/Users/wujunjie/Downloads/officialmapWords";
-		String subtitleNew = "C:/Users/wujunjie/Downloads/officialmapWordsNew";
+//		String subtitleOld = "C:/Users/wujunjie/Downloads/officialmapWords";
+//		String subtitleNew = "C:/Users/wujunjie/Downloads/officialmapWordsNew";
+		if(args.length==2){
+			updateOfficialMap(args[0],args[1]);
+		}else{
+			System.err.println("Usage:(java -jar ** subtitleOldFileName subtitleNewFileName)");
+		}
 		
-		updateOfficialMap(subtitleOld,subtitleNew);
+//		String keyword= "华毅恒业（北京）科技有限责任公司";
+//		System.out.println(sendQuery(keyword));
 	}
 
 	public static void updateOfficialMap(String from,String to) {
@@ -41,7 +47,9 @@ public class OfficialMapMain {
 			String tmp = "";
 			while ((tmp = br.readLine()) != null) {
 				total++;
-				System.out.println(total);
+				if(total%10000==0)
+					System.out.println(total);
+				
 				int index = tmp.indexOf("<officialmap>");
 				
 				if (index > 0) {
@@ -138,8 +146,12 @@ public class OfficialMapMain {
 			String address = feature.getDetail().getAddress();
 
 			String[] txts = txt.split(",");
-			String positionx = txts[0];
-			String positiony = txts[1];
+			String positionx = "";
+			String positiony = "";
+			if(txts.length==2){
+				positionx = txts[0];
+				positiony = txts[1];
+			}
 			// System.out.println("address:" + address + "\t(posx,posy):" +
 			// positionx + "," + positiony);
 			// return address;
