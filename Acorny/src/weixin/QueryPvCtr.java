@@ -24,11 +24,11 @@ public class QueryPvCtr {
 	private static BigDecimal threshold = new BigDecimal(0.2);
 	
 	public static void main(String[] args) {
-//		mergeData();
-//		displayResult();
-//		outputResult();
+		mergeData();
+		displayResult();
+		outputResult();
 //		filterByPvCTR();
-		countQuery();
+//		countQuery();
 	}
 	
 	/**

@@ -1,6 +1,9 @@
 package test;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 public class MapTest {
 
@@ -29,6 +32,28 @@ public class MapTest {
 		map.put("1", user);
 	}
 
+	public static void treeMapTest(){
+		TreeMap<Integer,String> tmap = new TreeMap<Integer,String>();
+		tmap.put(0,"abcd");
+		tmap.put(1, "aaa");
+		tmap.put(2, "bbb");
+		tmap.put(4, "ddd");
+		tmap.put(3, "ccc");
+		Iterator<Entry<Integer,String>> iter = tmap.entrySet().iterator();
+		while(iter.hasNext()){
+			Entry<Integer,String> entry = (Entry<Integer,String>)iter.next();
+			System.out.println(entry.getKey()+"\t"+entry.getValue());
+		}
+		
+		for(int i=0;i<10;i++){
+			System.out.println("start:"+i);
+			if(i==3){
+				i--;
+				continue;
+			}
+			System.out.println("end:"+i);
+		}
+	}
 }
 
 class User{
