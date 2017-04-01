@@ -2,32 +2,38 @@ package weixin;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class QueryPvCtr {
+public class WeixinArticleMerge {
 
 	private static HashMap<String,Double[]> queryPVCTR;
-	private static String outputFile = "conf/weixinQueryResult.txt";
-	private static String outputFile2 = "conf/weixinQueryResult2.txt";
-	private static String letterResultFile = "conf/weixinLetterResult.txt";
-	private static String digitResultFile = "conf/weixinDigitResult.txt";
-	private static String keywordResultFile = "conf/weixinKeywordResult.txt";
+	private static String DATA_PATH = "./";
+	private static String outputFile = DATA_PATH+"weixinQueryResult.txt";
+	private static String outputFile2 = DATA_PATH+"weixinQueryResult2.txt";
+	private static String letterResultFile = DATA_PATH+"weixinLetterResult.txt";
+	private static String digitResultFile = DATA_PATH+"weixinDigitResult.txt";
+	private static String keywordResultFile = DATA_PATH+"weixinKeywordResult.txt";
 	
 	private static BigDecimal threshold = new BigDecimal(0.2);
 	
 	public static void main(String[] args) {
+//		String letter = "abc";
+//		String digit = "1234560";
+//		System.out.println(isAllLetter(letter)+"\t"+isAllDigit(digit));
+		
 		mergeData();
-		displayResult();
+//		displayResult();
 		outputResult();
-//		filterByPvCTR();
+		filterByPvCTR();
 //		countQuery();
 	}
 	
@@ -141,43 +147,62 @@ public class QueryPvCtr {
 	 * 把多个文件的数据合并，保存为query pv cl ctr
 	 */
 	public static void mergeData(){
-		File f1 = new File("conf/");
+		File f1 = new File(DATA_PATH);
 		queryPVCTR = new HashMap<String,Double[]>();
 		int total = 0;
+		String charSet = "utf8";
+		String testWord = "109路公交车路线";
 		
 		if(f1.isDirectory()){
 			File[] files = f1.listFiles();
 			for(File f : files){
-				if(f.getName().startsWith("weixinQueryCtr0")){
+				if(f.getName().startsWith("part-r-")){
+//					System.out.println("file name:"+f.getName());
 					try {
-						BufferedReader br = new BufferedReader(new FileReader(f));
+						BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f),charSet));
 						String tmp = "";
+						String key = "";
+						
 						while((tmp=br.readLine())!=null){
 							String[] strs = tmp.split("\t");
 							total++;
-							if(strs.length>=4){
-								String key = strs[0];
-						         
-								key = URLDecoder.decode(key, "gb2312");
-								key = URLDecoder.decode(key, "gb2312");
+							Double[] values = {new Double(0),new Double(0),new Double(0)};
+							double pv = 0;
+							double cl = 0;
+							double ctr = 0;
+							
+							if(strs.length==3){
+								key = strs[0];
 								
-								Double[] values = {new Double(0),new Double(0),new Double(0)};
-								double pv = Double.parseDouble(strs[1]);
-								double cl = Double.parseDouble(strs[2]);
-								double ctr = Double.parseDouble(strs[3]);
+								if(key.trim().isEmpty()) continue;
+								if(isAllDigit(key) || isAllLetter(key)) continue;
 								
-								values[0] = pv;
-								values[1] = cl;
-								values[2] = ctr;
+								pv = Double.parseDouble(strs[1]);
+								cl = Double.parseDouble(strs[2]);
+								ctr = cl/pv;
 								
-								if(queryPVCTR.containsKey(key)){
-									values[0] += queryPVCTR.get(key)[0];
-									values[1] += queryPVCTR.get(key)[1];
-									values[2] += queryPVCTR.get(key)[2];
-									System.out.println(total+"\t"+key+"\t"+values[0]+"\t"+values[1]+"\t"+values[2]);
-								}
-								queryPVCTR.put(key, values);
+							}else if(strs.length == 4){
+								key = strs[0];
+								if(key.trim().isEmpty()) continue;
+								if(isAllDigit(key) || isAllLetter(key)) continue;
+								
+								pv = Double.parseDouble(strs[1]);
+								cl = Double.parseDouble(strs[2]);
+								ctr = Double.parseDouble(strs[3]);
 							}
+							
+							values[0] = pv;
+							values[1] = cl;
+							values[2] = ctr;
+							
+							if(queryPVCTR.containsKey(key)){
+								values[0] += queryPVCTR.get(key)[0];
+								values[1] += queryPVCTR.get(key)[1];
+								values[2] += queryPVCTR.get(key)[2];
+							}
+//							if(key.equals(testWord))
+//								System.out.println(total+"\t"+key+"\t"+values[0]+"\t"+values[1]+"\t"+values[2]);
+							queryPVCTR.put(key, values);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -185,6 +210,7 @@ public class QueryPvCtr {
 				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -207,8 +233,13 @@ public class QueryPvCtr {
 		Iterator<Entry<String, Double[]>> iter = queryPVCTR.entrySet().iterator();
 		try {
 			FileWriter fw = new FileWriter(new File(outputFile));
+//			String key = "";
+//			Double[] values = {new Double(0),new Double(0),new Double(0)};
+			
 			while(iter.hasNext()){
 				Entry<String, Double[]> entry = (Entry<String, Double[]>) iter.next();
+//				key = entry.getKey();
+//				values = entry.getValue();
 //				System.out.print(entry.getKey()+"\t"+entry.getValue()[0]+"\t"+entry.getValue()[1]+"\t"+entry.getValue()[2]+"\n");
 				fw.write(entry.getKey()+"\t"+entry.getValue()[0]+"\t"+entry.getValue()[1]+"\t"+entry.getValue()[2]+"\n");
 			}
