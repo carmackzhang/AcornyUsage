@@ -26,7 +26,7 @@ public class WeixinArticleMerge {
 	private static BigDecimal threshold = new BigDecimal(0.2);
 	
 	public static void main(String[] args) {
-//		String letter = "abc";
+//		String letter = "oppo";
 //		String digit = "1234560";
 //		System.out.println(isAllLetter(letter)+"\t"+isAllDigit(digit));
 		
