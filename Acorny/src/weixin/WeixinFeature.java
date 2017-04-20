@@ -1,15 +1,19 @@
 package weixin;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class WeixinFeature {
 
@@ -17,14 +21,101 @@ public class WeixinFeature {
 	private static String vrFeature = "./vrFeature";
 	private static String vrFeatureFinal = "./vrFeatureFinal";
 	private static String query = "./query_rankPos_final";
+	private static String rankPosData = "data/rankPosData";
+	private static String rankPosDataFinal = "data/rankPosDataFinal";
 	
 	public static void main(String[] args){
 //		analysisFeatureNum();
 //		displayResult();
-		extractVRFeature();
-		vrFeatureMerge();
+//		extractVRFeature();
+//		vrFeatureMerge();
+		rankPosData();
+//		printAttr(124);
 	}
 	
+	public static void printAttr(int num){
+		System.out.print("class,");
+		for(int i=1;i<(num-1);i++){
+			System.out.print("attr"+i+",");
+		}
+		System.out.print("attr"+(num-1));
+	}
+	public static void rankPosData(){
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(rankPosData));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(rankPosDataFinal));
+			
+			String tmp;
+			LinkedHashSet<String> attrs = new LinkedHashSet<String>();
+			LinkedHashMap<String,String> kvmap = new LinkedHashMap<String,String>();
+			int total = 0;
+			
+			while((tmp=br.readLine())!=null){
+				total++;
+				String[] strs = tmp.split(",");
+				for(String str : strs){
+					String[] kvs = str.split("=");
+					if(kvs.length == 2){
+						String key = kvs[0];
+						attrs.add(key);
+						kvmap.put(key, "0");
+					}
+				}
+			}
+			
+//			System.out.println(attrs.size()+"\t"+kvmap.size());
+			br = new BufferedReader(new FileReader(rankPosData));
+			
+			while((tmp=br.readLine())!=null){
+				String[] strs = tmp.split(",");
+//				System.out.println("strs len:"+strs.length);
+				for(String str : strs){
+					String[] kvs = str.split("=");
+					if(kvs.length == 2){
+						String key = kvs[0];
+						String val = kvs[1];
+						kvmap.put(key, val);
+//						System.out.println("len 2:"+key+"="+val);
+					}else{
+//						System.out.println("len 1:"+kvs[0]+"="+kvs[1]);
+					}
+				}
+				printMap(kvmap,bw);
+			}
+			
+			bw.flush();
+			bw.close();
+			
+			Iterator iter = attrs.iterator();
+			while(iter.hasNext()){
+				System.out.print(iter.next()+",");
+			}
+//			System.out.println("\n"+attrs.size()+"\t"+total);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void printMap(Map<String, String> kvmap, BufferedWriter bw) {
+		Iterator<Entry<String, String>> iter = kvmap.entrySet().iterator();
+//		System.out.println("size:"+kvmap.size());
+		if(kvmap.size() != 127) return;
+		StringBuilder sb = new StringBuilder();
+		try {
+			while(iter.hasNext()){
+				Entry<String,String> entry =(Entry<String, String>) iter.next();
+				String val = entry.getValue();
+				sb.append(val+",");
+			}
+			sb.append("\n");
+//			System.out.print(sb.toString());
+			bw.write(sb.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void vrFeatureMerge(){
 		
 		try {

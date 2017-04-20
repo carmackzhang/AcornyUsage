@@ -18,12 +18,19 @@ public class StringTest {
 //		System.out.println(getMedPbValue("MedPb:107 URank:43 URAns:40 Nor:608 FF:889 KC:889 END:889 d(2:0)"));
 //		String vrid = null;
 //		System.out.println("11009801".equals(vrid));
-		String query1 = "（钟祥）（最新）（招聘）（信）";
-		ArrayList<String> names = new ArrayList<String>();
-		names.add("钟祥最新");
-		System.out.println(hasQueryMatch(query1,"",names));
+//		String query1 = "（钟祥）（最新）（招聘）（信）";
+//		ArrayList<String> names = new ArrayList<String>();
+//		names.add("钟祥最新");
+//		System.out.println(hasQueryMatch(query1,"",names));
+		int attrNum = 50;
+		printAttr(attrNum);
 	}
 	
+	public static void printAttr(int attrNum){
+		for(int i=0;i<attrNum;i++){
+			System.out.print("attr"+i+",");
+		}
+	}
 	
 	public static int hasQueryMatch(String query1,String qcString, ArrayList<String> names){
     	if(query1==null || query1.isEmpty() || names==null || names.isEmpty()) return 0;

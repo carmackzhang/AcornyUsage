@@ -160,7 +160,7 @@ public class Weka {
 		
 		Instance ins = new DenseInstance(6);//6 attr
 		ins.setDataset(dataset.stringFreeStructure());
-		
+		System.out.println("total attr num:"+dataset.numAttributes());
 		ins.setValue(dataset.attribute("pMaxTr"), pMaxTr);
 		ins.setValue(dataset.attribute("pMaxMr"), pMaxMr);
 		ins.setValue(dataset.attribute("isOnlyOneTerm"), isOnlyOneTerm);
