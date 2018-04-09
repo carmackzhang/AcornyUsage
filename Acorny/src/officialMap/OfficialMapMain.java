@@ -19,14 +19,14 @@ public class OfficialMapMain {
 	public static void main(String[] args) {
 //		String subtitleOld = "C:/Users/wujunjie/Downloads/officialmapWords";
 //		String subtitleNew = "C:/Users/wujunjie/Downloads/officialmapWordsNew";
-		if(args.length==2){
-			updateOfficialMap(args[0],args[1]);
-		}else{
-			System.err.println("Usage:(java -jar ** subtitleOldFileName subtitleNewFileName)");
-		}
+//		if(args.length==2){
+//			updateOfficialMap(args[0],args[1]);
+//		}else{
+//			System.err.println("Usage:(java -jar ** subtitleOldFileName subtitleNewFileName)");
+//		}
 		
-//		String keyword= "华毅恒业（北京）科技有限责任公司";
-//		System.out.println(sendQuery(keyword));
+		String keyword= "青岛聚创环保设备有限公司";//"北京指南针科技发展股份有限公司";
+		System.out.println(sendQuery(keyword));
 	}
 
 	public static void updateOfficialMap(String from,String to) {
@@ -128,10 +128,11 @@ public class OfficialMapMain {
 			keyword = UrlEncoder.urlEncode(keyword, CharSet.UTF8);
 
 			String url = "http://map.sogou.com/EngineV6/search/json?what=keyword:" + keyword.toLowerCase()
-					+ "&range=city:全国&exact=1&resultTypes=poi,busline";
+					+ "&range=city:北京&exact=1&resultTypes=poi,busline";
 
 			String res = readerPageByUrl(url);
 			if (res.contains("error")) {
+				System.out.println("ERROR!!  "+res);
 				return null;
 			}
 			// System.out.println(res);
@@ -144,7 +145,8 @@ public class OfficialMapMain {
 			Feature feature = mapResponse.getResponse().getData().getFeature().get(0);
 			String txt = feature.getPoints().getTxt();
 			String address = feature.getDetail().getAddress();
-
+			String phone = feature.getDetail().getPhone();
+			
 			String[] txts = txt.split(",");
 			String positionx = "";
 			String positiony = "";
@@ -157,6 +159,7 @@ public class OfficialMapMain {
 			// return address;
 			SubtitleMap a = new SubtitleMap();
 			a.setAddress(address);
+			a.setPhone(phone);
 			a.setName(oriword);
 			a.setPositionx(positionx);
 			a.setPositiony(positiony);

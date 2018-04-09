@@ -16,7 +16,8 @@ import java.util.Map.Entry;
 public class WeixinArticleMerge {
 
 	private static HashMap<String,Double[]> queryPVCTR;
-	private static String DATA_PATH = "./";
+//	private static String DATA_PATH = "/search/odin/wujunjie/weixin/weixin_filt/";
+	private static String DATA_PATH = "data/";
 	private static String outputFile = DATA_PATH+"weixinQueryResult.txt";
 	private static String outputFile2 = DATA_PATH+"weixinQueryResult2.txt";
 	private static String letterResultFile = DATA_PATH+"weixinLetterResult.txt";
@@ -25,15 +26,31 @@ public class WeixinArticleMerge {
 	
 	private static BigDecimal threshold = new BigDecimal(0.2);
 	
+    static final char SBC_CHAR_START = 65281; // 全角！  全角对应于ASCII表的可见字符从！开始，偏移值为65281 
+  
+    static final char SBC_CHAR_END = 65374; // 全角～ 全角对应于ASCII表的可见字符到～结束，偏移值为65374 
+     
+    static final int CONVERT_STEP = 65248; // 全角半角转换间隔   ASCII表中除空格外的可见字符与对应的全角字符的相对偏移 
+  
+    static final char SBC_SPACE = 12288; // 全角空格 12288  全角空格的值，它没有遵从与ASCII的相对偏移，必须单独处理
+  
+    static final char DBC_SPACE = ' '; // 半角空格  半角空格的值，在ASCII中为32(Decimal) 
+    
+	
 	public static void main(String[] args) {
 //		String letter = "oppo";
 //		String digit = "1234560";
 //		System.out.println(isAllLetter(letter)+"\t"+isAllDigit(digit));
 		
-		mergeData();
-//		displayResult();
-		outputResult();
-		filterByPvCTR();
+		if(args.length < 2) {
+			System.err.println("Need charset, such as: utf8 gb2312; And pv>threshold, such as threshold=20");
+			return;
+		}
+		
+		mergeData(args[0], args[1]);
+		displayResult();
+//		outputResult();
+//		filterByPvCTR();
 //		countQuery();
 	}
 	
@@ -146,11 +163,11 @@ public class WeixinArticleMerge {
 	/**
 	 * 把多个文件的数据合并，保存为query pv cl ctr
 	 */
-	public static void mergeData(){
+	public static void mergeData(String charSet, String pv_threshold){
 		File f1 = new File(DATA_PATH);
 		queryPVCTR = new HashMap<String,Double[]>();
 		int total = 0;
-		String charSet = "utf8";
+//		String charSet = "utf8";
 		String testWord = "109路公交车路线";
 		
 		if(f1.isDirectory()){
@@ -175,7 +192,7 @@ public class WeixinArticleMerge {
 								key = strs[0];
 								
 								if(key.trim().isEmpty()) continue;
-								if(isAllDigit(key) || isAllLetter(key)) continue;
+//								if(isAllDigit(key) || isAllLetter(key)) continue;
 								
 								pv = Double.parseDouble(strs[1]);
 								cl = Double.parseDouble(strs[2]);
@@ -184,7 +201,7 @@ public class WeixinArticleMerge {
 							}else if(strs.length == 4){
 								key = strs[0];
 								if(key.trim().isEmpty()) continue;
-								if(isAllDigit(key) || isAllLetter(key)) continue;
+//								if(isAllDigit(key) || isAllLetter(key)) continue;
 								
 								pv = Double.parseDouble(strs[1]);
 								cl = Double.parseDouble(strs[2]);
@@ -202,7 +219,8 @@ public class WeixinArticleMerge {
 							}
 //							if(key.equals(testWord))
 //								System.out.println(total+"\t"+key+"\t"+values[0]+"\t"+values[1]+"\t"+values[2]);
-							queryPVCTR.put(key, values);
+							if(isAllDigit(pv_threshold) && pv>Double.parseDouble(pv_threshold))
+								queryPVCTR.put(full2HalfChange(key).toLowerCase(), values);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -250,4 +268,24 @@ public class WeixinArticleMerge {
 		}
 		
 	}
+	
+	
+	public static String full2HalfChange(String src) {  
+        if (src == null) {  
+            return src;  
+        }  
+        StringBuilder buf = new StringBuilder(src.length());  
+        char[] ca = src.toCharArray();  
+        for (int i = 0; i < src.length(); i++) {  
+            if (ca[i] >= SBC_CHAR_START && ca[i] <= SBC_CHAR_END) { // 如果位于全角！到全角～区间内  
+                buf.append((char) (ca[i] - CONVERT_STEP));  
+            } else if (ca[i] == SBC_SPACE) { // 如果是全角空格  
+                buf.append(DBC_SPACE);  
+            } else { // 不处理全角空格，全角！到全角～区间外的字符  
+                buf.append(ca[i]);  
+            }  
+        }  
+        return buf.toString();  
+    }  
+	
 }

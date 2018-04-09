@@ -14,7 +14,7 @@ public class StringTest {
 //		indexTest();
 //		matchTest();
 //		mingyiTest("创伤性枢椎前滑脱");
-//		System.out.println(isAllLetterOrDigit(" baixue bing "));
+//		System.out.println(isAllLetterOrDigit(" 1024 cmk "));
 //		System.out.println(getMedPbValue("MedPb:107 URank:43 URAns:40 Nor:608 FF:889 KC:889 END:889 d(2:0)"));
 //		String vrid = null;
 //		System.out.println("11009801".equals(vrid));
@@ -22,8 +22,90 @@ public class StringTest {
 //		ArrayList<String> names = new ArrayList<String>();
 //		names.add("钟祥最新");
 //		System.out.println(hasQueryMatch(query1,"",names));
-		int attrNum = 50;
-		printAttr(attrNum);
+//		int attrNum = 50;
+//		printAttr(attrNum);
+//		String xml = "<xml>";
+//		String tplid = "3007";
+//		
+//		System.out.println(appendTest(xml, tplid));
+		
+//		emptyTest();
+//		printTest();
+//		charTest();
+//		System.out.println(isAllDigit("1234 "));
+//		String str = "壮阳药哪个好＿有问必答＿快速问医生";
+//		System.out.println(str.indexOf("_"));
+//		System.out.println(str.indexOf("＿"));
+//		StringBuilder sb = new StringBuilder();
+//		String tmp = "clustervr=\"0\"";
+//		sb.append(tmp+"   aa");
+//		int start = sb.indexOf(tmp);
+//		sb.toString().replace(tmp, "clustervr=\"2\"");
+//		sb.replace(start, start+tmp.length(), "clustervr=\"2\"");
+//		System.out.println(sb.toString());
+//		int classid = 0;
+//		int tplid = 0;
+//		String horizon_type = "other";
+//		switch(horizon_type){
+//		case "japan":classid=30010141;tplid=18094;break;
+//		case "korea":classid=30010142;tplid=18094;break;
+//		case "english":classid=30010140;tplid=18094;break;
+//		default:classid=1;tplid=1;break;
+//		}
+//		System.out.println(classid + "\t" +tplid);
+		
+		printFeature(44);
+	}
+
+	private static void printFeature(int num) {
+		for(int i=1;i < num; i++) {
+			System.out.print("f"+i+",");
+		}
+		System.out.println("label");
+	}
+
+	public static String reverseString(String str) {
+		String res = "abcde";
+		char[] array = str.toCharArray();
+		for(int i=0; i < array.length; i++) {
+			
+		}
+		return res;
+	}
+	
+	public static void charTest() {
+		char dict[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+		StringBuffer buffer = new StringBuffer();
+		buffer.reverse();
+		buffer.append("13102");
+		char x[] = new char[3];
+		x[0] = dict[10 >> 2 & 0xf];//2
+		x[1] = dict[(60 >>> 2) - (10 ^ 9)];//c
+		x[2] = dict[(139 | 193) % 5];//3
+		buffer.insert(2, Integer.parseInt(String.valueOf(x), 16));//13707102
+		for (int i = buffer.length(); i > 0; i--) {
+			System.out.print(buffer.charAt(i - 1));
+		}
+	}
+	
+	private static void printTest() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("abc\n");
+		sb.append("cde");
+		System.out.println(sb.toString());
+	}
+	
+	private static void emptyTest() {
+		String a = null;
+		String b = "";
+		String c = " ";
+//		System.out.println(a.isEmpty()+","+b.isEmpty());
+		System.out.println(b.isEmpty()+","+b.length()+"\t"+c.isEmpty()+","+c.length());
+	}
+
+	public static String appendTest(String xml, String tplid){
+		xml = xml+tplid;
+		return xml;
 	}
 	
 	public static void printAttr(int attrNum){
@@ -88,8 +170,7 @@ public class StringTest {
 	
 	public static boolean isAllDigit(String query) {
 		for (int i = 0; i < query.length(); i++){
-			System.out.println(i+"\t"+query.charAt(i)+"\tlen="+query.length());
-			if (query.charAt(i) > 9 || query.charAt(i) < 0)
+			if (query.charAt(i) > '9' || query.charAt(i) < '0')
 				return false;
 		}
 		return true;
@@ -133,10 +214,13 @@ public class StringTest {
 		}
 	}
 	private static void indexTest(){
-		String tmp = "abcdefghijklmnopqrstuvwxyz";
-		int start = tmp.indexOf("d");
-		int end = tmp.indexOf("z",start);
-		System.out.println(start+"\t"+end);
+		String url = "http://g.pconline.com.cn/dl/64569.htmlj";
+		int pos = url.indexOf("/",9);
+		System.out.println(url.substring(0,pos+1));
+		int pos1 = url.lastIndexOf("/");
+		System.out.println(url.substring(0,pos1+1));
+		int pos2 = url.lastIndexOf("/", url.length());
+		System.out.println(url.substring(0,pos2+1));
 	}
 	
 	private static void matchTest(){
@@ -148,15 +232,53 @@ public class StringTest {
 		String pattern2 = "(.*)到(.*)高铁(.*)";
 		Pattern p1 = Pattern.compile(pattern2);
 		Matcher m1 = p1.matcher(s1);
-		while(m1.find()){
-			System.out.println(m1.group(0));
-		}
+//		while(m1.find()){
+//			System.out.println(m1.group(0));
+//		}
 		
 		String pattern3 = "<timeorder[<!\\[CDATA\\[]{0,}([\\d]{8})[\\]]{0,}[>]{0,}</timeorder>";
 		Pattern p3 = Pattern.compile(pattern3);
 		Matcher m3 = p3.matcher(s2);
-		while(m3.find()){
-			System.out.println(m3.group(1));
+//		while(m3.find()){
+//			System.out.println(m3.group(1));
+//		}
+		
+		String title = "广东潮汕麻将v1.0.2";
+		String versionP = "v[\\d]\\.[\\d]\\.[\\d]";
+	
+		Pattern p4 = Pattern.compile(versionP);
+		Matcher m4 = p4.matcher(title);
+		while(m4.find()){
+			System.out.println(m4.group(0));
+		}
+		
+		String frontContent = "苏轼,字子瞻号东坡居士";
+		
+		Pattern pname = Pattern.compile("(.*?)[字|号](.*)");
+		Matcher mname = pname.matcher(frontContent);
+		
+		while(mname.find()) {
+			int start = mname.start();//下标
+			int end = mname.end();
+			int count = mname.groupCount();
+			System.out.println(start+"\t"+end+"\t"+count);
+			for(int i=0; i <= count; i++) {
+				System.out.println(mname.group(i));
+			}
+		}
+		if(frontContent.contains("(.*)字(.*)") || frontContent.contains("###号###")){
+			System.out.println("content is contained");
+		}
+		
+		String health = "health:37;knowledge:6;";
+		Pattern hp = Pattern.compile("health:([\\d]+)");
+		Matcher hm = hp.matcher(health);
+		System.out.println(hm.groupCount());
+		int groupCount = hm.groupCount();
+		int health_val = 0;
+		while(hm.find()) {
+			if(groupCount>=1) health_val = Integer.parseInt(hm.group(1));
+			System.out.print(health_val);
 		}
 	}
 }

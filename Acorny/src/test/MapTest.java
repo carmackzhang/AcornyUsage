@@ -2,19 +2,40 @@ package test;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class MapTest {
 
+	private static HashMap<String, String> words = new HashMap<String,String>();
+	
 	public static void main(String[] args) {
-		HashMap<String,User> map = new HashMap<String,User>();
-		mapCopy(map);
-		System.out.println(map.size());
-		mapCopy2(map);
-		System.out.println(map.size());
+//		HashMap<String,User> map = new HashMap<String,User>();
+//		mapCopy(map);
+//		System.out.println(map.size());
+//		mapCopy2(map);
+//		System.out.println(map.size());
+		mapCost();
 	}
 	
+	public static void mapCost(){
+		HashMap<String, String> tmp_map = new HashMap<String, String>();
+		int million = 100000000;
+		long begin = System.currentTimeMillis();
+		addItem2Map(tmp_map,million);
+		long end1 = System.currentTimeMillis();
+		addItem2Map(words,million);
+		long end2 = System.currentTimeMillis();
+		System.out.println("time1:"+(end1-begin)+" time2:"+(end2-end1));
+	}
+	
+	public static void addItem2Map(Map map, int num){
+		int count = 0;
+		for(int i=0; i<num; i++){
+			map.put("key"+count, "val"+count);
+		}
+	}
 	
 	public static void mapCopy(HashMap<String,User> map){
 		HashMap<String,User> oriMap = new HashMap<String,User>();

@@ -1,14 +1,39 @@
 package test;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TimeTest {
 	public static void main(String[] args) {
+		
+//		CalendarTest(2017,6,19);
+		
+//		boolean t = hasTimeliness("包子油价怎么样");
+//		System.out.println(t);
+//		long now = System.currentTimeMillis();
+//		long med_ans_time = 1506566340;
+//		int med_ans_date = -1;
+//		med_ans_date = (int) ((now/1000 - med_ans_time)/86400);
+//		System.out.println(med_ans_date+" "+now+" "+med_ans_time);
+		timePatternTest();
+	}
+	
+	public static void timePatternTest() {
+		String title = "2018世界俱乐部排名2017hh2019";
+		Pattern pattern = Pattern.compile("(19|20|21)\\d{2}");
+		Matcher matcher = pattern.matcher(title);
+		while(matcher.find()){
+			System.out.println(matcher.groupCount()+"\t"+matcher.start()+"\t"+matcher.end()+"\t"+matcher.group(0));
+		}
+	}
+	
+	public static void CalendarTest(int y, int m, int d){
 		long time = System.currentTimeMillis();
-		System.out.println(time);
+		System.out.println("now : "+time);
 		Calendar cal = Calendar.getInstance();
 //		long millis = 1467778598000L;
 //		cal.setTimeInMillis(millis);
-		String tmp = "1489011416";
+		String tmp = "1506566340";//"1482177685";
 		long time1 = Long.parseLong(tmp);
 		cal.setTimeInMillis(time1*1000);
 		int year = cal.get(Calendar.YEAR);
@@ -24,6 +49,16 @@ public class TimeTest {
 		
 		System.out.println("date:"+date);
 		
+		Calendar curDate = Calendar.getInstance();
+//		curDate.set(y, m-1, d);
+//		curDate.set(0, -1, 0);
+		year = curDate.get(Calendar.YEAR);
+		month = curDate.get(Calendar.MONTH)+1;
+		day = curDate.get(Calendar.DAY_OF_MONTH);
+		System.out.println(year+"-"+month+"-"+day+" "+curDate.getTimeInMillis());
+	}
+	
+	public static void test(){
 		int date1 = Integer.parseInt("07050906");
 		int date2 = Integer.parseInt("07060906");
 //		System.out.println(date1<date2);
@@ -47,9 +82,6 @@ public class TimeTest {
 		System.out.println(isAllDigit("11a"));
 		Long d1 = Long.parseLong(tmpDate);
 		System.out.println(d1);
-		
-		boolean t = hasTimeliness("包子油价怎么样");
-		System.out.println(t);
 	}
 	
 	public static boolean isAllDigit(String query)

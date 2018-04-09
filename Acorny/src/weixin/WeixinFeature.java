@@ -22,6 +22,7 @@ public class WeixinFeature {
 	private static String vrFeatureFinal = "./vrFeatureFinal";
 	private static String query = "./query_rankPos_final";
 	private static String rankPosData = "data/rankPosData";
+//	private static String rankPosData = "data/rankPosData_1k_shuf";
 	private static String rankPosDataFinal = "data/rankPosDataFinal";
 	
 	public static void main(String[] args){
@@ -30,7 +31,7 @@ public class WeixinFeature {
 //		extractVRFeature();
 //		vrFeatureMerge();
 		rankPosData();
-//		printAttr(124);
+//		printAttr(174);
 	}
 	
 	public static void printAttr(int num){
@@ -63,8 +64,18 @@ public class WeixinFeature {
 				}
 			}
 			
-//			System.out.println(attrs.size()+"\t"+kvmap.size());
+			System.out.println(attrs.size()+"\t"+kvmap.size());
 			br = new BufferedReader(new FileReader(rankPosData));
+			
+			Iterator<String> attrIter = attrs.iterator();
+			int attrNum = 0;
+			while(attrIter.hasNext() && attrNum<attrs.size()-1){
+				String attr = attrIter.next();
+//				System.out.print(attr+",");
+				bw.append(attr+",");
+				attrNum++;
+			}
+			bw.append(attrIter.next()+"\n");
 			
 			while((tmp=br.readLine())!=null){
 				String[] strs = tmp.split(",");
@@ -80,16 +91,12 @@ public class WeixinFeature {
 //						System.out.println("len 1:"+kvs[0]+"="+kvs[1]);
 					}
 				}
-				printMap(kvmap,bw);
+				printMap(kvmap, bw);
 			}
 			
 			bw.flush();
 			bw.close();
 			
-			Iterator iter = attrs.iterator();
-			while(iter.hasNext()){
-				System.out.print(iter.next()+",");
-			}
 //			System.out.println("\n"+attrs.size()+"\t"+total);
 			
 		} catch (IOException e) {
@@ -98,17 +105,21 @@ public class WeixinFeature {
 	}
 	
 	private static void printMap(Map<String, String> kvmap, BufferedWriter bw) {
-		Iterator<Entry<String, String>> iter = kvmap.entrySet().iterator();
+		
 //		System.out.println("size:"+kvmap.size());
-		if(kvmap.size() != 127) return;
+//		if(kvmap.size() != 175) return;
+		
+		Iterator<Entry<String, String>> iter = kvmap.entrySet().iterator();
 		StringBuilder sb = new StringBuilder();
+		int kvSize = 0;
 		try {
-			while(iter.hasNext()){
+			while(iter.hasNext() && kvSize<kvmap.size()-1){
 				Entry<String,String> entry =(Entry<String, String>) iter.next();
 				String val = entry.getValue();
 				sb.append(val+",");
+				kvSize++;
 			}
-			sb.append("\n");
+			sb.append(iter.next().getValue()+"\n");
 //			System.out.print(sb.toString());
 			bw.write(sb.toString());
 		} catch (IOException e) {

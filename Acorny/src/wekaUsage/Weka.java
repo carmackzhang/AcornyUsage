@@ -42,8 +42,9 @@ public class Weka {
 	
 	public static void buildModel(Instances data){
 		try {
+			loadDataSet(inDataPath);
 			classifier = new RandomForest();
-			String[] options = {"-K","15","-I","100","-depth","0"};
+			String[] options = {"-K","15","-I","50","-depth","20"};
 			classifier.setOptions(options);
 			classifier.buildClassifier(data);
 		} catch (Exception e) {
@@ -249,19 +250,20 @@ public class Weka {
 	}
 	
 	public static void main(String[] args){
-		loadDataSet(inDataPath);
+//		loadDataSet(inDataPath);
 		
-		attributeSelect();
+//		attributeSelect();
 		
 //		crossValidation(classifier,totalSet,10);
 //		
-//		outputModel(classifier, outModelPath);
+//		outputModel(outModelPath);
 		
 //		testModel();
 		
-		testModelByInstance(5.1, 50, "FALSE", "FALSE", 36472.0);
-		testModelByInstance(5.6, 50, "FALSE", "FALSE", 61492.0);
-		testModelByInstance(5.4, 50, "TRUE", "FALSE", 100000.0);
+//		testModelByInstance(5.1, 50, "FALSE", "FALSE", 36472.0);
+//		testModelByInstance(5.6, 50, "FALSE", "FALSE", 61492.0);
+//		testModelByInstance(5.4, 50, "TRUE", "FALSE", 100000.0);
+		
 	}
 	
 }
