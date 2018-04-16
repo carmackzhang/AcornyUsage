@@ -37,12 +37,12 @@ public class CrossValidation {
     HashMap<String, Object> params = new HashMap<String, Object>();
 
     params.put("eta", 1.0);
-    params.put("max_depth", 3);
-    params.put("silent", 1);
+//    params.put("max_depth", 4);
+    params.put("silent", 0);
     params.put("nthread", 6);
     params.put("objective", "binary:logistic");
     params.put("gamma", 1.0);
-    params.put("eval_metric", "error");
+    params.put("eval_metric", "auc");
 
     //do 5-fold cross validation
     int round = 2;
@@ -52,5 +52,9 @@ public class CrossValidation {
 
     String[] evalHist = XGBoost.crossValidation(trainMat, params, round, nfold, metrics, null,
             null);
+    
+    for(String eval : evalHist) {
+    	System.out.println(eval);
+    }
   }
 }

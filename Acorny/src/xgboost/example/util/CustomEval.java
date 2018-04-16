@@ -49,6 +49,7 @@ public class CustomEval implements IEvaluation {
     }
     int nrow = predicts.length;
     for (int i = 0; i < nrow; i++) {
+//    	System.out.println("eval i="+i);
       if (labels[i] == 0f && predicts[i][0] > 0.5) {
         error++;
       } else if (labels[i] == 1f && predicts[i][0] <= 0.5) {

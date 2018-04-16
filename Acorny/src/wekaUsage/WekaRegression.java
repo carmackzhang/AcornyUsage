@@ -8,6 +8,13 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.ASSearch;
+import weka.attributeSelection.CfsSubsetEval;
+import weka.attributeSelection.GainRatioAttributeEval;
+import weka.attributeSelection.GreedyStepwise;
+import weka.attributeSelection.PrincipalComponents;
+import weka.attributeSelection.Ranker;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
@@ -18,6 +25,7 @@ import weka.core.converters.AbstractFileLoader;
 import weka.core.converters.ArffLoader;
 import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
+import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.Normalize;
 
 public class WekaRegression {
@@ -25,8 +33,8 @@ public class WekaRegression {
 //	private ArffLoader loader;
 	private AbstractFileLoader loader;
 //	private CSVLoader loader;
-	private Instances trainData;
-	private Instances testData;
+	private static Instances trainData;
+	private static Instances testData;
 //	private AttributeSelectedClassifier classifier;
 	private static Classifier classifier;
 	private static String iteration;
@@ -118,6 +126,12 @@ public class WekaRegression {
 			System.out.println("modelInfo:"+classifier+"time:"+time/1000+" s");
 		}else{
 			System.err.println("Usage:(train test iteration depth attrNum model) or ((train iteration depth attrNum model)) or (test model)");
+		}
+		
+		try {
+			attributeSelect(testData);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -404,5 +418,62 @@ public class WekaRegression {
 			return data;
 		}
 	}
+	
+	public static void attributeSelectUseFilter(Instances data) throws Exception {
+		weka.filters.supervised.attribute.AttributeSelection attr = new weka.filters.supervised.attribute.AttributeSelection();
+//		ASEvaluation eval = new GainRatioAttributeEval();
+		ASEvaluation eval = new PrincipalComponents();
+	
+		ASSearch search = new Ranker();
+		
+		attr.setEvaluator(eval);
+		attr.setSearch(search);
+		attr.setInputFormat(data);
+		
+		System.out.println("ori attribute num:"+data.numAttributes()+" instance_num:"+data.numInstances());
+		
+		Instances pro_data = Filter.useFilter(data, attr);
+		
+		System.out.println("pro attribute num:"+pro_data.numAttributes()+" instance_num:"+pro_data.numInstances());
+		
+		
+		System.out.println(pro_data.stringFreeStructure());
+		
+	}
+	
+	public static void attributeSelect(Instances data) throws Exception {
+		weka.attributeSelection.AttributeSelection attr_select = new weka.attributeSelection.AttributeSelection();
+	    PrincipalComponents eval = new PrincipalComponents();
+//	    GreedyStepwise search = new GreedyStepwise();
+	    
+//	    eval.setMaximumAttributeNames(5);
+//	    eval.setVarianceCovered(0.9);
+	    
+	    String[] options = {"-R","0.8","-A","1"};
+	    eval.setOptions(options);
+	    
+	    Ranker search = new Ranker();
+//	    search.setSearchBackwards(true);
+	    attr_select.setEvaluator(eval);
+	    attr_select.setSearch(search);
+	    
+	    attr_select.SelectAttributes(data);
+	    System.out.println(attr_select.toResultsString());
+	    
+	    int[] indices = attr_select.selectedAttributes();
+	    for(int i : indices) {
+	    	System.out.print(i+" ");
+	    }
+	    double[][] selectedAttr = attr_select.rankedAttributes();
+	    System.out.println("indices.len:"+indices.length+" "+selectedAttr.length);
+	    
+	    for(int i = 0; i < selectedAttr.length; i++) {
+	    	for(int j = 0; j < selectedAttr[i].length; j++) {
+	    		System.out.print("["+i+","+j+"]="+selectedAttr[i][j]+" ");
+	    	}
+	    	System.out.println();
+	    }
+	}
+	
 	
 }
